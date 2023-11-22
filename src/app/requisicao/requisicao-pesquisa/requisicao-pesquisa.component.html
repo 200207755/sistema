@@ -1,0 +1,85 @@
+<div class="container">
+
+  <form autocomplete="off" (ngSubmit)="pesquisar()">
+    <div class="grid">
+
+      <div class="col-12">
+        <h1>Listagem de Requisições</h1>
+      </div>
+
+      <div class="col-12">
+        <label style="display: block">Data da Requisição</label>
+
+        <p-calendar dateFormat="dd/mm/yy" [inputStyle]="{ width: '95px' }" name="requisicaoInicio"
+          [(ngModel)]="filtro.dataRequisicaoInicio"></p-calendar>
+
+        <label class="label">até</label>
+        <p-calendar dateFormat="dd/mm/yy" [inputStyle]="{ width: '95px' }" name="requisicaoFim"
+          [(ngModel)]="filtro.dataRequisicaoFim"></p-calendar>
+      </div>
+
+      <div class="col-12">
+        <button pButton type="submit" label="Pesquisar"></button>
+      </div>
+
+      
+
+    </div>
+  </form>
+
+  <div class="grid">
+    <div class="col-12">
+      <p-table [value]="requisicoes" [responsive]="true" [paginator]="true" [rows]="filtro.itensPorPagina" [lazy]="true"
+        [totalRecords]="totalRegistros" (onLazyLoad)="aoMudarPagina($event)" #tabela>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="col-data-header">Requisição</th>
+            <th class="col-data-header">Processamento</th>
+            <th class="col-valor-header">Link</th>
+            <th class="col-valor-header">Status</th>
+            <th class="col-acoes"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-requisicao>
+          <tr>
+            <td class="col-data">
+              <span class="p-column-title">Requisição</span>
+              {{ requisicao.dataRequisicao | date:'dd/MM/y' }}
+            </td>
+            <td class="col-data">
+              <span class="p-column-title">Processamento</span>
+              {{ requisicao.dataProcessamento | date:'dd/MM/y' }}
+            </td>
+            <td>
+              <span class="p-column-title">Link</span>
+              {{ requisicao.link }}
+            </td>
+            <td>
+              <span class="p-column-title">Status</span>
+              {{ requisicao.status }}
+            </td>
+
+            <td class="col-acoes">
+              <button pButton icon="pi pi-trash" pTooltip="Excluir" tooltipPosition="top"
+                (click)="confirmarExclusao(requisicao)"
+                [disabled]="naoTemPermissao('ROLE_REMOVER_REQUISICAO')"></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6">
+              Nenhum registro encontrado
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="col-12">
+      <button pButton icon="pi pi-plus" pTooltip="Incluir Requisição" tooltipPosition="top" label="Incluir Requisição"
+                (click)="incluir()"
+                [disabled]="naoTemPermissao('ROLE_CADASTRAR_REQUISICAO')"></button>
+    </div>
+  </div>
+
+</div>
